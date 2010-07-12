@@ -1,3 +1,29 @@
+ProcrastinatorsHelp
+-------------------
+
+"Procrastinator's Help" or "Save my time" or "Help me get things done" is a tool to stop you from
+surfing to various time consuming websites you often visit. This is tool currently only runs under GNU/Linux
+systems or with various tweaking (maybe) also under other operating systems.
+
+The work principle is simple, you maintain two different access lists based on your /etc/hosts file
+and disallow certain cites which you don't want to visit during certain hours for each day. So if
+you are for instance a reddit addict then this will help you to force yourself to work on more
+important stuff.
 
 
-(C) 2009, Bjoern Rennhak, under an MIT licence. http://www.opensource.org/licenses/mit-license.php
+Requirements
+------------
+
+  o Ruby
+  o GNU/Linux System
+
+
+Copyright
+---------
+
+(C) 2010, Bjoern Rennhak, under a triple license
+
+                o MIT licence. http://www.opensource.org/licenses/mit-license.php
+                o GPLv2 license
+                o BSD license
+
