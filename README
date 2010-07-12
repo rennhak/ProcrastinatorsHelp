@@ -16,6 +16,14 @@ Requirements
 
   o Ruby
   o GNU/Linux System
+  o figlet
+
+
+Examples
+--------
+
+See in the examples/ folder two simple hosts file examples which will redirect certain sites to
+localhost if queried.
 
 
 Copyright
