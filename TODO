@@ -1,0 +1,10 @@
+- Make a more intuitive configuration file
+- Allow exceptions e.g. of saturday and sunday
+- Allow the dynamic configuatation of how many times it should be denied if the user tries to
+override
+- Allow the display of encouraging or taunting messages depending on user preferences to keep you
+working
+- Allow a learning sysstem to figure out if you circumvent the tool in order to indulge your e.g.
+hackernews obsession.
+- Allow a simple httpd hook with dynamic responses if you try to visit the webpages you wanted
+blocked
