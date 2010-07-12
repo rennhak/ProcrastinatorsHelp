@@ -16,7 +16,48 @@ Requirements
 
   o Ruby
   o GNU/Linux System
-  o figlet
+  o GNU Figlet
+  o (optional) www-servers/mini_httpd (e.g. v1.19) or similar simple local httpd daemon
+
+Installation
+------------
+
+  o Copy the rb files in the lib/ folder to your $HOME/bin directory or where you keep your local bin files
+  o Make sure that the local bin files are in your $PATH environment variable (to be found in your shell config file, e.g. .zshrc)
+  o Add the "workmode" and the "playmode" aliases to your shell config file in the apropriate syntax (provided is zsh syntax)
+  o Change the time inside the lib/checkworktimehosts.rb at line 15
+    - "wts_hour" means "Work time start (hour)" 
+    - "wts_min"  means "Work time start (min)"
+    - "wte_hour" means "Work time end (hour)"
+    - "wte_min"  means "Work time end (min)"
+
+    Later versions of this software will make it easier to configure (more intuitive) and also allow
+    exceptions e.g. on certain days etc.
+
+  o Copy the modified and customized hosts.block and hosts.original to the /etc/. folder
+  o Make sure you have installed all dependencies
+  o If you didn't install all local webserver you will only get a resolve error in your browser. If
+  you want to see a nice error message install a local webserver such as "www-servers/mini_httpd-1.19"
+  and point it to the local www page you want to display.
+
+
+Usage
+-----
+
+  o Open a console. The "checkworktimehosts.rb" script due to your shell hook found in bin/ will
+  execute and check if the time is now "work" or "play". Depending on that it will check the hosts
+  and replace if necessary.
+  o If you want to force override this it requires you to enter your root password and display a
+  figlet message. You can customize this to make it more difficult or disallow alltogether if you
+  need to get things done.
+    o ~% worktime   # switches to workmode and forces overwrite of /etc/hosts with hosts.block
+    o ~% playtime   # switches to playmode and forces overwrite of /etc/hosts with hosts.original
+
+
+Result
+------
+
+Now you should be able to get some work done from e.g. 10AM to 8PM  -  d(o_o)P
 
 
 Examples
@@ -24,6 +65,63 @@ Examples
 
 See in the examples/ folder two simple hosts file examples which will redirect certain sites to
 localhost if queried.
+
+
+------ example when switching to play time mode (force) ------
+
+~% playmode
+ ____          _   _  ___ _____                     _       
+|  _ \  ___   | \ | |/ _ \_   _| __      ____ _ ___| |_ ___ 
+| | | |/ _ \  |  \| | | | || |   \ \ /\ / / _` / __| __/ _ \
+| |_| | (_) | | |\  | |_| || |    \ V  V / (_| \__ \ ||  __/
+|____/ \___/  |_| \_|\___/ |_|     \_/\_/ \__,_|___/\__\___|
+                                                            
+                          _____ ___ __  __ _____   _ _ _ 
+ _   _  ___  _   _ _ __  |_   _|_ _|  \/  | ____| | | | |
+| | | |/ _ \| | | | '__|   | |  | || |\/| |  _|   | | | |
+| |_| | (_) | |_| | |      | |  | || |  | | |___  |_|_|_|
+ \__, |\___/ \__,_|_|      |_| |___|_|  |_|_____| (_|_|_)
+ |___/                                                   
+Password: 
+`/etc/hosts.original' -> `/etc/hosts'
+
+~%
+
+---------------------------------------------------------------
+
+
+------- example when swtiching to work time mode (force) ------
+
+% workmode 
+__   __                           _ _                             _   
+\ \ / /__  _   _   _ __ ___  __ _| | |_   _  __      ____ _ _ __ | |_ 
+ \ V / _ \| | | | | '__/ _ \/ _` | | | | | | \ \ /\ / / _` | '_ \| __|
+  | | (_) | |_| | | | |  __/ (_| | | | |_| |  \ V  V / (_| | | | | |_ 
+  |_|\___/ \__,_| |_|  \___|\__,_|_|_|\__, |   \_/\_/ \__,_|_| |_|\__|
+                                      |___/                           
+ _                     _         _          __  __       _                 ___ 
+| |_ ___     __ _  ___| |_   ___| |_ _   _ / _|/ _|   __| | ___  _ __   __|__ \
+| __/ _ \   / _` |/ _ \ __| / __| __| | | | |_| |_   / _` |/ _ \| '_ \ / _ \/ /
+| || (_) | | (_| |  __/ |_  \__ \ |_| |_| |  _|  _| | (_| | (_) | | | |  __/_| 
+ \__\___/   \__, |\___|\__| |___/\__|\__,_|_| |_|    \__,_|\___/|_| |_|\___(_) 
+            |___/                                                              
+ _____ _                  ____   ___    ___ _____   _ _ _ 
+|_   _| |__   ___ _ __   |  _ \ / _ \  |_ _|_   _| | | | |
+  | | | '_ \ / _ \ '_ \  | | | | | | |  | |  | |   | | | |
+  | | | | | |  __/ | | | | |_| | |_| |  | |  | |   |_|_|_|
+  |_| |_| |_|\___|_| |_| |____/ \___/  |___| |_|   (_|_|_)
+                                                          
+Password: 
+`/etc/hosts.block' -> `/etc/hosts'
+
+~% 
+
+
+---------------------------------------------------------------
+
+
+The switch from work to play or vice versa is checked everytime depending on your clock, settings and if you open a console.
+
 
 
 Copyright
