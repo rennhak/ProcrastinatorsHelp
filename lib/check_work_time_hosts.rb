@@ -39,8 +39,9 @@ class Mode # {{{
     ( switchHostsToWork! unless( workHostsInPlace? )  ) if( @options[ :work ] )
     ( switchHostsToPlay! if( workHostsInPlace? )      ) if( @options[ :play ] )
 
-    time?   if( @options[ :time ] )
-    check!  if( @options[ :automatic ] )
+    time?   if( @options[ :time       ] )
+    check!  if( @options[ :automatic  ] )
+    ntp!    if( @options[ :ntp        ] )
 
   end # of def initialize }}}
 
@@ -99,6 +100,12 @@ class Mode # {{{
     end
   end # of def check! }}}
 
+  # = ntp! calls the ntp client to reset the system clock to the correct time
+  def ntp!
+    # FIXME write a more clever way to retrieve country specific ntp servers
+    ntp_server = %w[0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org]
+    `sudo ntpdate #{ntp_server[rand(ntp_server.length - 1)]}`
+  end
 end # of class mode }}}
 
 
@@ -125,6 +132,9 @@ if __FILE__ == $0 # {{{
       options[:automatic]   = a
     end
 
+    opts.on("-n", "--ntp", "Set the system clock via NTP service") do |n|
+      options[:ntp]   = n
+    end
 
   end.parse!
 
