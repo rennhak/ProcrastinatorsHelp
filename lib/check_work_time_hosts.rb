@@ -21,13 +21,12 @@ class Mode # {{{
   # @params wts workTimeStart
   # @params wte workTimeEnd
   def initialize wts_hour = 10, wts_min = 30, wte_hour = 20, wte_min = 00 # {{{
-    @dtn = DateTime.now
-    @hour, @min = @dtn.hour, @dtn.min
+    @dtn            = DateTime.now
+    @hour, @min     = @dtn.hour, @dtn.min
 
-    @now            = Time.local( DateTime.now.year, DateTime.now.month, DateTime.now.day, Time.now.hour, Time.now.min, Time.now.sec)
-    @workBeginTime  = Time.local( DateTime.now.year, DateTime.now.month, DateTime.now.day, wts_hour, wts_min, Time.now.sec)
-    @workEndTime    = Time.local( DateTime.now.year, DateTime.now.month, DateTime.now.day, wte_hour, wte_min, Time.now.sec)
-
+    @now            = Time.local( DateTime.now.year, DateTime.now.month, DateTime.now.day, Time.now.hour, Time.now.min, Time.now.sec )
+    @workBeginTime  = Time.local( DateTime.now.year, DateTime.now.month, DateTime.now.day, wts_hour,      wts_min,      Time.now.sec )
+    @workEndTime    = Time.local( DateTime.now.year, DateTime.now.month, DateTime.now.day, wte_hour,      wte_min,      Time.now.sec )
   end # of def initialize }}}
 
 
@@ -35,41 +34,26 @@ class Mode # {{{
   # @type Helper function
   # @returns True, if its worktime or false if not
   def work? # {{{
-    # 10:00 --> -1
-    # 10:30 --> 0
-    # 10:31 --> 1
-    # 19:00 --> 1
-    # 20:00 --> 1
-    # 20:01 --> 1
-    # 00:00 --> -1
+    # 10:00, 00:00                        --> -1
+    # 10:30                               --> 0
+    # 10:31, 19:00, 20:00, 20:01          --> 1
     # p (@now <=> @workBeginTime)
 
-    # 10:00 --> -1
-    # 10:30 --> -1
-    # 10:31 --> -1
-    # 19:00 --> -1
-    # 20:00 --> 0
-    # 20:01 --> 1
-    # 00:00 --> -1
+    # 10:00, 10:30, 10:31, 19:00, 00:00   --> -1
+    # 20:00                               --> 0
+    # 20:01                               --> 1
     # p (@now <=> @workEndTime)
 
-    if( ( ( @now <=> @workBeginTime ) == 1) and ( ( @now <=> @workEndTime ) == -1 ) )
-      true
-    else
-      false
-    end
+    ( ( ( @now <=> @workBeginTime ) == 1) and ( ( @now <=> @workEndTime ) == -1 ) ) ? ( true ) : ( false )
   end # of def work? }}}
+
 
   # = workHostsInPlace? determines if the /etc/hosts file is the 'work' template or not
   # @type Helper function
   # @returns True, if it is or false if not
   def workHostsInPlace? # {{{
     result = `diff -q /etc/hosts /etc/hosts.block`
-    if( result.length == 0 )
-      true
-    else
-      false
-    end
+    ( result.length == 0 ) ? ( true ) : ( false )
   end # of def workHostsInPlace? }}}
 
   # = switchHostsToWork! does exactly as the name implies, switching of whatever is in place currently to work mode
@@ -93,7 +77,6 @@ class Mode # {{{
       switchHostsToPlay! if( workHostsInPlace? )
     end
   end # of def check }}}
-
 
 end # of class mode }}}
 
