@@ -19,6 +19,11 @@ Requirements
   o GNU Figlet
   o (optional) www-servers/mini_httpd (e.g. v1.19) or similar simple local httpd daemon
 
+  o diff
+  o sudo
+  o cp
+
+
 Installation
 ------------
 

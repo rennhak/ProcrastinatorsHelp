@@ -12,6 +12,7 @@
 
 # = Libraries
 require 'date'
+require 'optparse'
 
 
 # = Mode is a abstract class to control if you are currently supposed to work or you can relax
@@ -20,7 +21,9 @@ class Mode # {{{
   # = Initialize is the custom constructor of the Mode class, which sets up the time settings when work and play are ok
   # @params wts workTimeStart
   # @params wte workTimeEnd
-  def initialize wts_hour = 10, wts_min = 30, wte_hour = 20, wte_min = 00 # {{{
+  def initialize options, wts_hour = 10, wts_min = 30, wte_hour = 20, wte_min = 00 # {{{
+    @options        = options
+
     # Set the hosts variable where to find the various files
     @hosts, @hosts_original, @hosts_block = "/etc/hosts", "/etc/hosts.original", "/etc/hosts.block"
 
@@ -31,7 +34,21 @@ class Mode # {{{
     @now            = Time.local( DateTime.now.year, DateTime.now.month, DateTime.now.day, Time.now.hour, Time.now.min, Time.now.sec )
     @workBeginTime  = Time.local( DateTime.now.year, DateTime.now.month, DateTime.now.day, wts_hour,      wts_min,      Time.now.sec )
     @workEndTime    = Time.local( DateTime.now.year, DateTime.now.month, DateTime.now.day, wte_hour,      wte_min,      Time.now.sec )
+
+    # Control flow
+    ( switchHostsToWork! unless( workHostsInPlace? )  ) if( @options[ :work ] )
+    ( switchHostsToPlay! if( workHostsInPlace? )      ) if( @options[ :play ] )
+
+    time?   if( @options[ :time ] )
+    check!  if( @options[ :automatic ] )
+
   end # of def initialize }}}
+
+
+  # = time? displays the time when the work hosts is active
+  def time? # {{{
+    puts "The current time when '#{@hosts_block}' is active is from '#{@workBeginTime.to_s}' to '#{@workEndTime}' according to your current time."
+  end # of def time? }}}
 
 
   # = The function work? determines if it is *now* worktime or playtime according to the default settings
@@ -72,23 +89,51 @@ class Mode # {{{
     `sudo cp -v #{@hosts_original} #{@hosts}`
   end # of def switchHostsToPlay! }}}
 
-  # = check determines if we actually are currently in work time or not and sets the hosts file accordingly.
+  # = check! determines if we actually are currently in work time or not and sets the hosts file accordingly.
   # @helpers work?, switchHostsToPlay!, switchHostsToWork!, workHostsInPlace?
-  def check # {{{
+  def check! # {{{
     if( work? )
       switchHostsToWork! unless( workHostsInPlace? )
     else
       switchHostsToPlay! if( workHostsInPlace? )
     end
-  end # of def check }}}
+  end # of def check! }}}
 
 end # of class mode }}}
 
 
-# TODO: If it is directly invoked make sure the user gets a blame!
+# = Direct Invocation
 if __FILE__ == $0 # {{{
 
-  m = Mode.new.check
+  options = {}
+  OptionParser.new do |opts|
+    opts.banner = "Usage: check_work_time_hosts.rb [options]"
+
+    opts.on("-w", "--work", "Set the work time hosts file") do |w|
+      options[:work]   = w
+    end
+
+    opts.on("-p", "--play", "Set the play time hosts file") do |p|
+      options[:play]   = p
+    end
+
+    opts.on("-t", "--time", "Display time frame when work hosts file is active") do |t|
+      options[:time]   = t
+    end
+
+    opts.on("-a", "--automatic", "Set the work or play time hosts file according to current time automatically") do |a|
+      options[:automatic]   = a
+    end
+
+
+  end.parse!
+
+
+  if( options.empty? )
+    raise ArgumentError, "Please try '-h' or '--help' to view all possible options"
+  end
+
+  mode    = Mode.new( options )
 
 end # of __FILE__ == $0 }}}
 
