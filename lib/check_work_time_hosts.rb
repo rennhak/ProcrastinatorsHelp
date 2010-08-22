@@ -21,6 +21,10 @@ class Mode # {{{
   # @params wts workTimeStart
   # @params wte workTimeEnd
   def initialize wts_hour = 10, wts_min = 30, wte_hour = 20, wte_min = 00 # {{{
+    # Set the hosts variable where to find the various files
+    @hosts, @hosts_original, @hosts_block = "/etc/hosts", "/etc/hosts.original", "/etc/hosts.block"
+
+    # Set the time and when the work time begins and ends
     @dtn            = DateTime.now
     @hour, @min     = @dtn.hour, @dtn.min
 
@@ -34,15 +38,15 @@ class Mode # {{{
   # @type Helper function
   # @returns True, if its worktime or false if not
   def work? # {{{
+    # p (@now <=> @workBeginTime)
     # 10:00, 00:00                        --> -1
     # 10:30                               --> 0
     # 10:31, 19:00, 20:00, 20:01          --> 1
-    # p (@now <=> @workBeginTime)
 
+    # p (@now <=> @workEndTime)
     # 10:00, 10:30, 10:31, 19:00, 00:00   --> -1
     # 20:00                               --> 0
     # 20:01                               --> 1
-    # p (@now <=> @workEndTime)
 
     ( ( ( @now <=> @workBeginTime ) == 1) and ( ( @now <=> @workEndTime ) == -1 ) ) ? ( true ) : ( false )
   end # of def work? }}}
@@ -52,20 +56,20 @@ class Mode # {{{
   # @type Helper function
   # @returns True, if it is or false if not
   def workHostsInPlace? # {{{
-    result = `diff -q /etc/hosts /etc/hosts.block`
+    result = `diff -q #{@hosts} #{@hosts_block}`
     ( result.length == 0 ) ? ( true ) : ( false )
   end # of def workHostsInPlace? }}}
 
   # = switchHostsToWork! does exactly as the name implies, switching of whatever is in place currently to work mode
   # @type Helper function
   def switchHostsToWork! # {{{
-    `sudo cp -v /etc/hosts.block /etc/hosts`
+    `sudo cp -v #{@hosts_block} #{@hosts}`
   end # of def switchHostsToWork! }}}
 
   # = switchHostsToPlay! does exactly as the name implies, switching of whatever is in place currently to play mode
   # @type Helper function
   def switchHostsToPlay! # {{{
-    `sudo cp -v /etc/hosts.original /etc/hosts`
+    `sudo cp -v #{@hosts_original} #{@hosts}`
   end # of def switchHostsToPlay! }}}
 
   # = check determines if we actually are currently in work time or not and sets the hosts file accordingly.
